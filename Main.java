@@ -75,17 +75,32 @@ public class Main {
         rightPanel.setPreferredSize(new Dimension(200,800));
         rightPanel.setMinimumSize(new Dimension(200,800));
         rightPanel.setMaximumSize(new Dimension(200,800));
-        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
-        rightPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        // 전체 레이아웃을 BorderLayout으로 변경하여 라벨 공간낭비 방지
+        rightPanel.setLayout(new BorderLayout(0, 10));
+        rightPanel.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
+
+        // 상단 컨트롤: 기록 추가 버튼 + 라벨을 담는 패널 (자신에게 필요한 공간만 차지)
+        JPanel topControls = new JPanel(new BorderLayout(0, 15));
+        topControls.setOpaque(false);
 
         JButton btnAdd = new JButton("\uAE30\uB85D \uCD94\uAC00"); // "기록 추가"
-        btnAdd.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnAdd.setFont(new Font("\uB9D1\uC740 \uACE0\uB515", Font.BOLD, 18)); // "맑은 고딕"
+        btnAdd.setPreferredSize(new Dimension(190, 60)); // 버튼 칸 높이 확보
         btnAdd.addActionListener(e -> new AddRecordDialog(frame, mapLabel, tabbedPane));
-        rightPanel.add(btnAdd);
-        rightPanel.add(Box.createVerticalStrut(10));
+        topControls.add(btnAdd, BorderLayout.NORTH);
 
-        // Filters
-        rightPanel.add(new JLabel("\uCE74\uD14C\uACE0\uB9AC \uD544\uD130 (\uD1A0\uAE00):")); // "카테고리 필터 (토글):"
+        // Filters Label (부드러운 텍스트와 폰트로 교체)
+        JLabel filterLabel = new JLabel("\u2728 \uC6D0\uD558\uB294 \uCE74\uD14C\uACE0\uB9AC \uC120\uD0DD \u2728", SwingConstants.CENTER); // "✨ 원하는 카테고리 선택 ✨"
+        filterLabel.setFont(new Font("\uB9D1\uC740 \uACE0\uB515", Font.BOLD, 14)); // "맑은 고딕"
+        filterLabel.setForeground(new Color(100, 100, 100)); // 부드러운 회색
+        topControls.add(filterLabel, BorderLayout.SOUTH);
+
+        rightPanel.add(topControls, BorderLayout.NORTH);
+
+        // 하단 컨트롤: 8개의 카테고리 버튼만을 담는 그리드 (남은 공간을 꽉 채움)
+        JPanel filterGrid = new JPanel(new GridLayout(8, 1, 5, 5));
+        filterGrid.setOpaque(false);
+        
         String[] kinds = {"\uD55C\uC2DD","\uBD84\uC2DD","\uC911\uC2DD","\uC77C\uC2DD","\uC591\uC2DD","\uCE74\uD398","\uD328\uC2A4\uD2B8\uD478\uB4DC","\uAE30\uD0C0"};
         String[] uncheckedKinds = {"images/\uD55C\uC2DDunchecked.jpg","images/\uBD84\uC2DDunchecked.jpg","images/\uC911\uC2DDunchecked.jpg",
                 "images/\uC77C\uC2DDunchecked.jpg","images/\uC591\uC2DDunchecked.jpg","images/\uCE74\uD398unchecked.jpg",
@@ -97,21 +112,24 @@ public class Main {
         for(int i = 0; i < kinds.length; i++){
             final int idx = i;
             JButton filterBtn = new JButton();
-            filterBtn.setPreferredSize(new Dimension(170, 60));
-            filterBtn.setMaximumSize(new Dimension(170, 60));
-            filterBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
 
             ImageIcon checkedIcon = new ImageIcon(checkedKinds[i]);
             ImageIcon uncheckedIcon = new ImageIcon(uncheckedKinds[i]);
 
-            filterBtn.setIcon(checkedIcon);
+            // 이미지가 버튼의 꽉 찬 칸(약 가로 190, 세로 75)에 맞게 강제 리사이징 되도록 설정
+            Image scaledChecked = checkedIcon.getImage().getScaledInstance(190, 75, Image.SCALE_SMOOTH);
+            Image scaledUnchecked = uncheckedIcon.getImage().getScaledInstance(190, 75, Image.SCALE_SMOOTH);
+            ImageIcon finalCheckedIcon = new ImageIcon(scaledChecked);
+            ImageIcon finalUncheckedIcon = new ImageIcon(scaledUnchecked);
+
+            filterBtn.setIcon(finalCheckedIcon);
             filterBtn.setBorderPainted(false);
             filterBtn.setContentAreaFilled(false);
             filterBtn.setFocusPainted(false);
 
             filterBtn.putClientProperty("checked", true);
-            filterBtn.putClientProperty("checkedIcon", checkedIcon);
-            filterBtn.putClientProperty("uncheckedIcon", uncheckedIcon);
+            filterBtn.putClientProperty("checkedIcon", finalCheckedIcon);
+            filterBtn.putClientProperty("uncheckedIcon", finalUncheckedIcon);
 
             filterBtn.addActionListener(e -> {
                 boolean isChecked = (Boolean)filterBtn.getClientProperty("checked");
@@ -126,10 +144,12 @@ public class Main {
                 updateMarkerVisibility();
             });
 
-            rightPanel.add(filterBtn);
+            filterGrid.add(filterBtn);
             kindFilterMap.put(kinds[i], filterBtn);
             kindChecksMap.put(kinds[i], new JCheckBox(kinds[i], true));
         }
+
+        rightPanel.add(filterGrid, BorderLayout.CENTER);
 
         // After building filter buttons, load markers so filters exist
         loadMarkersFromRecords();
@@ -484,13 +504,17 @@ public class Main {
             // Prefer registry entry for location
             RestaurantPreset preset = restaurantProfiles.get(r.restaurantName);
             int locX = -1, locY = -1;
+            String category = "\uAE30\uD0C0"; // "기타"
+            
             if(preset != null){
                 locX = preset.x;
                 locY = preset.y;
+                category = preset.category != null ? preset.category : "\uAE30\uD0C0"; // 카테고리 정보 가져오기
             } else {
                 try(BufferedReader br = Files.newBufferedReader(new File(r.path).toPath(), Charset.forName("MS949"))){
                     String line;
                     while((line = br.readLine()) != null){
+                        if(line.startsWith("\uCE74\uD14C\uACE0\uB9AC:")) category = line.substring(5).trim(); // "카테고리:"
                         if(line.startsWith("\uC704\uCE58X:")) locX = Integer.parseInt(line.substring(4).trim()); // "위치X:"
                         if(line.startsWith("\uC704\uCE58Y:")) locY = Integer.parseInt(line.substring(4).trim()); // "위치Y:"
                     }
@@ -513,11 +537,32 @@ public class Main {
             mapPanel.add(mapLabel);
 
             // Mark location
-            JButton marker = new JButton("●");
-            marker.setFont(new Font("Arial", Font.PLAIN, 20));
-            marker.setForeground(Color.RED);
-            marker.setBounds(locX-5, locY-5, 20, 20);
+            JButton marker = new JButton();
+            String imagePath = "images/location" + category + ".jpg";
+            ImageIcon markerIcon = new ImageIcon(imagePath);
+
+            // 해당 식당의 카테고리 마커 이미지가 있으면 그걸 띄우고, 없으면 텍스트(●) 마커 표시
+            if(markerIcon.getIconWidth() > 0 && markerIcon.getIconHeight() > 0){
+                marker.setIcon(markerIcon);
+                int iw = markerIcon.getIconWidth();
+                int ih = markerIcon.getIconHeight();
+                int mx = Math.max(0, Math.min(1000 - iw, locX - iw/2));
+                int my = Math.max(0, Math.min(800 - ih, locY - ih/2));
+                marker.setBounds(mx, my, iw, ih);
+            } else {
+                marker.setText("●");
+                marker.setFont(new Font("Arial", Font.PLAIN, 20));
+                marker.setForeground(Color.RED);
+                marker.setMargin(new Insets(0, 0, 0, 0)); // ★ 텍스트가 잘리지 않도록 여백 완전히 제거
+                marker.setBounds(locX-10, locY-10, 20, 20); // 공간을 조금 더 넉넉하게
+            }
+            
+            // 공통 스타일 (테두리와 배경 제거)
+            marker.setBorderPainted(false);
+            marker.setContentAreaFilled(false);
+            marker.setFocusPainted(false);
             marker.setEnabled(false);
+            
             mapPanel.add(marker);
             try{ mapPanel.setComponentZOrder(marker, 0); }catch(Exception ignore){}
 
