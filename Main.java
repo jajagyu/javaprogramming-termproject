@@ -36,14 +36,14 @@ public class Main {
         Container c = frame.getContentPane();
         c.setLayout(new BorderLayout());
 
-        // Create tabbed pane for Map and Records
+        // 지도와 기록을 위한 탭 패널 생성
         tabbedPane = new JTabbedPane();
 
-        // ===== TAB 1: MAP VIEW =====
+        // ===== 탭 1: 지도 뷰 =====
         JPanel mapViewPanel = createMapViewPanel();
         tabbedPane.addTab("\uC9C0\uB3C4", mapViewPanel); // "지도"
 
-        // ===== TAB 2: RECORDS VIEW =====
+        // ===== 탭 2: 기록 뷰 =====
         JPanel recordsViewPanel = createRecordsViewPanel();
         tabbedPane.addTab("\uAE30\uB85D", recordsViewPanel); // "기록"
 
@@ -62,7 +62,7 @@ public class Main {
     JPanel createMapViewPanel(){
         JPanel panel = new JPanel(new BorderLayout());
 
-        // Left: map panel
+        // 왼쪽: 지도 패널
         mapPanel = new JPanel(null);
         mapPanel.setPreferredSize(new Dimension(1000,800));
         ImageIcon mapIcon = new ImageIcon("images/\uC9C0\uB3C4.jpg"); // "images/지도.jpg"
@@ -70,7 +70,7 @@ public class Main {
         mapLabel.setBounds(0,0,1000,800);
         mapPanel.add(mapLabel);
 
-        // Right: filter controls
+        // 오른쪽: 필터 컨트롤
         JPanel rightPanel = new JPanel();
         rightPanel.setPreferredSize(new Dimension(200,800));
         rightPanel.setMinimumSize(new Dimension(200,800));
@@ -79,7 +79,7 @@ public class Main {
         rightPanel.setLayout(new BorderLayout(0, 10));
         rightPanel.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
 
-        // 상단 컨트롤: 기록 추가 버튼 + 라벨을 담는 패널 (자신에게 필요한 공간만 차지)
+        // 상단 컨트롤: 기록 추가 버튼과 라벨을 담는 패널
         JPanel topControls = new JPanel(new BorderLayout(0, 15));
         topControls.setOpaque(false);
 
@@ -89,15 +89,15 @@ public class Main {
         btnAdd.addActionListener(e -> new AddRecordDialog(frame, mapLabel, tabbedPane));
         topControls.add(btnAdd, BorderLayout.NORTH);
 
-        // Filters Label (부드러운 텍스트와 폰트로 교체)
+        // 필터 라벨
         JLabel filterLabel = new JLabel(" \uC6D0\uD558\uB294 \uCE74\uD14C\uACE0\uB9AC \uC120\uD0DD ", SwingConstants.CENTER); // "원하는 카테고리 선택"
         filterLabel.setFont(new Font("\uB9D1\uC740 \uACE0\uB515", Font.BOLD, 14)); // "맑은 고딕"
-        filterLabel.setForeground(new Color(100, 100, 100)); // 부드러운 회색
+        filterLabel.setForeground(new Color(100, 100, 100));
         topControls.add(filterLabel, BorderLayout.SOUTH);
 
         rightPanel.add(topControls, BorderLayout.NORTH);
 
-        // 하단 컨트롤: 8개의 카테고리 버튼만을 담는 그리드 (남은 공간을 꽉 채움)
+        // 하단 컨트롤: 8개의 카테고리 버튼만을 담는 그리드
         JPanel filterGrid = new JPanel(new GridLayout(8, 1, 5, 5));
         filterGrid.setOpaque(false);
         
@@ -116,7 +116,7 @@ public class Main {
             ImageIcon checkedIcon = new ImageIcon(checkedKinds[i]);
             ImageIcon uncheckedIcon = new ImageIcon(uncheckedKinds[i]);
 
-            // 이미지가 버튼의 꽉 찬 칸(약 가로 190, 세로 75)에 맞게 강제 리사이징 되도록 설정
+            // 이미지 버튼 크기 조정
             Image scaledChecked = checkedIcon.getImage().getScaledInstance(190, 75, Image.SCALE_SMOOTH);
             Image scaledUnchecked = uncheckedIcon.getImage().getScaledInstance(190, 75, Image.SCALE_SMOOTH);
             ImageIcon finalCheckedIcon = new ImageIcon(scaledChecked);
@@ -151,12 +151,12 @@ public class Main {
 
         rightPanel.add(filterGrid, BorderLayout.CENTER);
 
-        // After building filter buttons, load markers so filters exist
+        // 필터 버튼 생성 후 마커 로드
         loadMarkersFromRecords();
 
         JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mapPanel, rightPanel);
         split.setDividerLocation(1000);
-        // Prevent user from resizing the divider so right panel stays fixed
+        // 사용자가 분할선을 크기 조정하지 못하도록 고정
         split.setEnabled(false);
         split.setDividerSize(0);
         panel.add(split, BorderLayout.CENTER);
@@ -234,7 +234,7 @@ public class Main {
         if(files==null) return;
         for(File f: files){
             String fname = f.getName();
-            // expected format: YYYY-MM-DD_식당명.txt
+            // 예상 포맷: YYYY-MM-DD_식당명.txt
             String base = fname.substring(0, fname.length()-4);
             String[] parts = base.split("_",2);
             LocalDate date = null;
@@ -243,10 +243,10 @@ public class Main {
                 date = LocalDate.parse(parts[0], dtf);
                 if(parts.length>1) rname = parts[1];
             }catch(Exception ex){
-                // fallback: treat as no-date
+                // 예외 발생 시 날짜 없음으로 처리
                 rname = base;
             }
-            // Prefer reading the first line of the file to get the real 식당명
+            // 파일의 첫 번째 줄을 읽어 실제 식당명 가져오기
             try(BufferedReader br = Files.newBufferedReader(f.toPath(), Charset.forName("MS949"))){
                 String first = br.readLine();
                 if(first!=null && first.startsWith("\uC2DD\uB2F9\uBA85:")){ // "식당명:"
@@ -256,7 +256,7 @@ public class Main {
             }catch(Exception ignored){ }
             records.add(new Record(f.getAbsolutePath(), date, rname));
         }
-        // sort by date desc (nulls last)
+        // 날짜 내림차순 정렬 (날짜가 없는 경우 마지막으로)
         records.sort((a,b)->{
             if(a.date==null && b.date==null) return a.path.compareTo(b.path);
             if(a.date==null) return 1;
@@ -379,7 +379,7 @@ public class Main {
     }
 
     void openRestaurantRecordList(String restaurantName, LocalDate selectedDate){
-        // find all records matching restaurantName
+        // 식당명과 일치하는 모든 기록 찾기
         java.util.List<Record> matchedRecords = new ArrayList<>();
         for(Record r: records){
             if(r.restaurantName.equals(restaurantName)){
@@ -392,12 +392,12 @@ public class Main {
             return;
         }
 
-        // Create dialog to show all records
+        // 모든 기록을 보여주는 다이얼로그 생성
         JDialog dialog = new JDialog(frame, restaurantName + " - \uAE30\uB85D \uBCF4\uAE30", true); // " - 기록 보기"
         dialog.setSize(600, 450);
         dialog.setLayout(new BorderLayout(10, 10));
 
-        // Top: buttons for each record
+        // 상단: 각 기록에 대한 버튼
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         java.util.List<JButton> buttons = new ArrayList<>();
@@ -435,7 +435,7 @@ public class Main {
         buttonScroll.setPreferredSize(new Dimension(580, 80));
         dialog.add(buttonScroll, BorderLayout.NORTH);
 
-        // Center: detail text area
+        // 중앙: 상세 내용 텍스트 영역
         JTextArea detailArea = new JTextArea();
         detailArea.setEditable(false);
         detailArea.setLineWrap(true);
@@ -443,7 +443,7 @@ public class Main {
         JScrollPane sp = new JScrollPane(detailArea);
         dialog.add(sp, BorderLayout.CENTER);
 
-        // Display selected record
+        // 선택된 기록 표시
         Record selectedRecord = matchedRecords.get(selectedIdx);
         try(BufferedReader br = Files.newBufferedReader(new File(selectedRecord.path).toPath(), Charset.forName("MS949"))){
             StringBuilder sb = new StringBuilder();
@@ -456,7 +456,7 @@ public class Main {
             detailArea.setText("\uD30C\uC77C\uC744 \uC77D\uC744 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4: "+ex.getMessage()); // "파일을 읽을 수 없습니다: "
         }
 
-        // Store detailArea and buttons in a way we can access it from button listeners
+        // 버튼 리스너에서 접근할 수 있도록 상세 영역과 버튼 저장
         dialog.getRootPane().putClientProperty("detailArea", detailArea);
         dialog.getRootPane().putClientProperty("buttons", buttons);
 
@@ -499,9 +499,9 @@ public class Main {
         }
         Record r = visibleRecords.get(idx);
 
-        // Read location from file
+        // 파일에서 위치 정보 읽기
         try{
-            // Prefer registry entry for location
+            // 레지스트리(기존 설정)의 위치 정보 우선 사용
             RestaurantPreset preset = restaurantProfiles.get(r.restaurantName);
             int locX = -1, locY = -1;
             String category = "\uAE30\uD0C0"; // "기타"
@@ -526,7 +526,7 @@ public class Main {
                 return;
             }
 
-            // Show location on map
+            // 지도에 위치 표시
             JDialog mapDialog = new JDialog(frame, r.restaurantName + " - \uC704\uCE58", true); // " - 위치"
             mapDialog.setSize(1000, 800);
             JPanel mapPanel = new JPanel(null);
@@ -536,7 +536,7 @@ public class Main {
             mapLabel.setBounds(0,0,1000,800);
             mapPanel.add(mapLabel);
 
-            // Mark location
+            // 위치 마커 표시
             JButton marker = new JButton();
             String imagePath = "images/location" + category + ".jpg";
             ImageIcon markerIcon = new ImageIcon(imagePath);
@@ -553,7 +553,7 @@ public class Main {
                 marker.setText("●");
                 marker.setFont(new Font("Arial", Font.PLAIN, 20));
                 marker.setForeground(Color.RED);
-                marker.setMargin(new Insets(0, 0, 0, 0)); // ★ 텍스트가 잘리지 않도록 여백 완전히 제거
+                marker.setMargin(new Insets(0, 0, 0, 0)); // 텍스트가 잘리지 않도록 여백 제거
                 marker.setBounds(locX-10, locY-10, 20, 20); // 공간을 조금 더 넉넉하게
             }
             
@@ -576,7 +576,7 @@ public class Main {
     }
 
     void openMostRecentForRestaurant(String restaurantName){
-        // find most recent record matching restaurantName
+        // 식당명과 일치하는 가장 최근 기록 찾기
         for(Record r: records){
             if(r.restaurantName.equals(restaurantName)){
                 int idx = records.indexOf(r);
@@ -605,7 +605,7 @@ public class Main {
             this.mapLabel = mapLabelRef;
             this.tabbedPane = tabbedPaneRef;
 
-            // Get existing restaurant names
+            // 기존에 저장된 식당명 가져오기
             Set<String> restNames = new TreeSet<>();
             restNames.addAll(restaurantProfiles.keySet());
             for(Record r : records){
@@ -626,7 +626,7 @@ public class Main {
             add(categoryLabel);
             String[] kinds = {"\uD55C\uC2DD","\uBD84\uC2DD","\uC911\uC2DD","\uC77C\uC2DD","\uC591\uC2DD","\uCE74\uD398","\uD328\uC2A4\uD2B8\uD478\uB4DC","\uAE30\uD0C0"};
             categoryCombo = new JComboBox<>(kinds);
-            categoryCombo.setSelectedIndex(7); // Default to "기타"
+            categoryCombo.setSelectedIndex(7); // 기본값 "기타"
             categoryCombo.setBounds(100, 55, 260, 25);
             add(categoryCombo);
 
@@ -756,10 +756,19 @@ public class Main {
             String note = noteArea.getText().trim();
             String category = (String)categoryCombo.getSelectedItem();
 
-            // Save location info to file (가-힣 -> \uAC00-\uD7A3 정규식 처리 완벽 보장)
+            // 파일에 위치 정보 저장
             String safeRest = restName.replaceAll("[^a-zA-Z0-9\uAC00-\uD7A3_\\- ]","_").replaceAll(" ","-");
-            String filename = date+"_"+safeRest+".txt";
-            File f = new File("Records/"+filename);
+            String baseFilename = date + "_" + safeRest;
+            String filename = baseFilename + ".txt";
+            File f = new File("Records/" + filename);
+
+            // 동일한 날짜, 동일한 식당인 경우 덮어쓰지 않고 번호를 붙여 새로운 파일로 생성
+            int counter = 1;
+            while (f.exists()) {
+                filename = baseFilename + "_" + counter + ".txt";
+                f = new File("Records/" + filename);
+                counter++;
+            }
 
             try(BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), Charset.forName("MS949")))){
                 bw.write("\uC2DD\uB2F9\uBA85: "+restName+"\n"); // "식당명: "
@@ -774,10 +783,10 @@ public class Main {
                 return;
             }
 
-            // Save/update location only in the restaurant registry (not in the record file)
+            // 레지스트리에만 식당 위치 정보 저장/업데이트
             saveRestaurantRegistryEntry(restName, category, selectedX, selectedY);
 
-            // Reload and refresh
+            // 새로고침 및 화면 갱신
             reloadRecords();
             seedRestaurantProfilesFromRecords();
             loadMarkersFromRecords();
@@ -786,9 +795,9 @@ public class Main {
     }
 
     void updateMarkerVisibility(){
-        // Update marker visibility based on category filters
+        // 카테고리 필터에 따라 마커 표시 여부 업데이트
         for(Marker m : markers){
-            // Prefer registry category if present, otherwise use marker's stored kinds
+            // 레지스트리에 저장된 카테고리가 있으면 우선 사용, 없으면 마커의 카테고리 사용
             String category = m.kinds;
             RestaurantPreset preset = restaurantProfiles.get(m.name);
             if(preset != null && preset.category != null && !preset.category.isEmpty()){
@@ -802,7 +811,7 @@ public class Main {
     }
 
     void loadMarkersFromRecords(){
-        // Clear existing markers (remove any JButton markers)
+        // 기존 마커 초기화 (JButton 마커 제거)
         markers.clear();
         Component[] comps = mapPanel.getComponents();
         for(Component comp : comps){
@@ -811,7 +820,7 @@ public class Main {
             }
         }
 
-        // Load markers from Records folder
+        // Records 폴더에서 마커 로드
         File dir = new File("Records");
         if(!dir.exists()) return;
 
@@ -837,7 +846,7 @@ public class Main {
                 int x = tmpX;
                 int y = tmpY;
 
-                // Prefer coordinates from registry (restaurantProfiles) if available
+                // 레지스트리의 위치 정보가 있으면 우선 사용
                 RestaurantPreset preset = restaurantProfiles.get(restaurantName);
                 String useKinds = kinds;
                 if(preset != null){
@@ -880,11 +889,11 @@ public class Main {
                     mark.addActionListener(e -> openRestaurantRecordList(restaurantName));
                 }
             }catch(Exception ex){
-                // Skip files that can't be parsed
+                // 파싱할 수 없는 파일은 건너뜀
             }
         }
 
-        // Ensure markers follow current filter state and refresh UI
+        // 현재 필터 상태에 맞춰 마커 갱신
         updateMarkerVisibility();
         mapPanel.revalidate();
         mapPanel.repaint();
