@@ -1,5 +1,3 @@
-
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -24,7 +22,7 @@ public class Main {
     Map<String, JCheckBox> kindChecksMap = new HashMap<>();
     Map<String, JButton> kindFilterMap = new HashMap<>();
     Map<String, RestaurantPreset> restaurantProfiles = new HashMap<>();
-    String selectedYear = "전체";
+    String selectedYear = "\uC804\uCCB4"; // "전체"
     JPanel mapPanel;
     JLabel mapLabel;
     JTabbedPane tabbedPane;
@@ -32,7 +30,7 @@ public class Main {
     public Main(){
         ensureRecordsDir();
         loadRestaurantRegistry();
-        frame = new JFrame("맛집 추억 지도");
+        frame = new JFrame("\uB9DB\uC9D1 \uCD94\uC5B5 \uC9C0\uB3C4"); // "맛집 추억 지도"
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1200,860);
         Container c = frame.getContentPane();
@@ -43,11 +41,11 @@ public class Main {
 
         // ===== TAB 1: MAP VIEW =====
         JPanel mapViewPanel = createMapViewPanel();
-        tabbedPane.addTab("지도", mapViewPanel);
+        tabbedPane.addTab("\uC9C0\uB3C4", mapViewPanel); // "지도"
 
         // ===== TAB 2: RECORDS VIEW =====
         JPanel recordsViewPanel = createRecordsViewPanel();
-        tabbedPane.addTab("기록", recordsViewPanel);
+        tabbedPane.addTab("\uAE30\uB85D", recordsViewPanel); // "기록"
 
         c.add(tabbedPane, BorderLayout.CENTER);
 
@@ -67,7 +65,7 @@ public class Main {
         // Left: map panel
         mapPanel = new JPanel(null);
         mapPanel.setPreferredSize(new Dimension(1000,800));
-        ImageIcon mapIcon = new ImageIcon("images/지도.jpg");
+        ImageIcon mapIcon = new ImageIcon("images/\uC9C0\uB3C4.jpg"); // "images/지도.jpg"
         mapLabel = new JLabel(mapIcon);
         mapLabel.setBounds(0,0,1000,800);
         mapPanel.add(mapLabel);
@@ -80,21 +78,21 @@ public class Main {
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
         rightPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
-        JButton btnAdd = new JButton("기록 추가");
+        JButton btnAdd = new JButton("\uAE30\uB85D \uCD94\uAC00"); // "기록 추가"
         btnAdd.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnAdd.addActionListener(e -> new AddRecordDialog(frame, mapLabel, tabbedPane));
         rightPanel.add(btnAdd);
         rightPanel.add(Box.createVerticalStrut(10));
 
         // Filters
-        rightPanel.add(new JLabel("카테고리 필터 (토글):"));
-        String[] kinds = {"한식","분식","중식","일식","양식","카페","패스트푸드","기타"};
-        String[] uncheckedKinds = {"images/한식unchecked.jpg","images/분식unchecked.jpg","images/중식unchecked.jpg",
-                "images/일식unchecked.jpg","images/양식unchecked.jpg","images/카페unchecked.jpg",
-                "images/패스트푸드unchecked.jpg","images/기타unchecked.jpg"};
-        String[] checkedKinds = {"images/한식checked.jpg","images/분식checked.jpg","images/중식checked.jpg",
-                "images/일식checked.jpg","images/양식checked.jpg","images/카페checked.jpg",
-                "images/패스트푸드checked.jpg","images/기타checked.jpg"};
+        rightPanel.add(new JLabel("\uCE74\uD14C\uACE0\uB9AC \uD544\uD130 (\uD1A0\uAE00):")); // "카테고리 필터 (토글):"
+        String[] kinds = {"\uD55C\uC2DD","\uBD84\uC2DD","\uC911\uC2DD","\uC77C\uC2DD","\uC591\uC2DD","\uCE74\uD398","\uD328\uC2A4\uD2B8\uD478\uB4DC","\uAE30\uD0C0"};
+        String[] uncheckedKinds = {"images/\uD55C\uC2DDunchecked.jpg","images/\uBD84\uC2DDunchecked.jpg","images/\uC911\uC2DDunchecked.jpg",
+                "images/\uC77C\uC2DDunchecked.jpg","images/\uC591\uC2DDunchecked.jpg","images/\uCE74\uD398unchecked.jpg",
+                "images/\uD328\uC2A4\uD2B8\uD478\uB4DCunchecked.jpg","images/\uAE30\uD0C0unchecked.jpg"};
+        String[] checkedKinds = {"images/\uD55C\uC2DDchecked.jpg","images/\uBD84\uC2DDchecked.jpg","images/\uC911\uC2DDchecked.jpg",
+                "images/\uC77C\uC2DDchecked.jpg","images/\uC591\uC2DDchecked.jpg","images/\uCE74\uD398checked.jpg",
+                "images/\uD328\uC2A4\uD2B8\uD478\uB4DCchecked.jpg","images/\uAE30\uD0C0checked.jpg"};
 
         for(int i = 0; i < kinds.length; i++){
             final int idx = i;
@@ -150,7 +148,7 @@ public class Main {
         JPanel panel = new JPanel(new BorderLayout());
 
         JPanel yearPanel = new JPanel(new BorderLayout());
-        yearPanel.add(new JLabel("년도별 보기"), BorderLayout.NORTH);
+        yearPanel.add(new JLabel("\uB144\uB3C4\uBCC4 \uBCF4\uAE30"), BorderLayout.NORTH); // "년도별 보기"
         yearList = new JList<>(yearModel);
         yearList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         yearList.addListSelectionListener(e -> {
@@ -193,7 +191,7 @@ public class Main {
         bottomPanel.add(new JScrollPane(recordDetail), BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel(new FlowLayout());
-        JButton showMapBtn = new JButton("위치 보기");
+        JButton showMapBtn = new JButton("\uC704\uCE58 \uBCF4\uAE30"); // "위치 보기"
         showMapBtn.addActionListener(e -> showLocationOnMap());
         buttonPanel.add(showMapBtn);
         bottomPanel.add(buttonPanel, BorderLayout.SOUTH);
@@ -231,7 +229,7 @@ public class Main {
             // Prefer reading the first line of the file to get the real 식당명
             try(BufferedReader br = Files.newBufferedReader(f.toPath(), Charset.forName("MS949"))){
                 String first = br.readLine();
-                if(first!=null && first.startsWith("식당명:")){
+                if(first!=null && first.startsWith("\uC2DD\uB2F9\uBA85:")){ // "식당명:"
                     String real = first.substring(4).trim();
                     if(!real.isEmpty()) rname = real;
                 }
@@ -246,12 +244,12 @@ public class Main {
             return b.date.compareTo(a.date);
         });
         LinkedHashSet<String> years = new LinkedHashSet<>();
-        years.add("전체");
+        years.add("\uC804\uCCB4"); // "전체"
         for(Record r: records){
             if(r.date != null) years.add(String.valueOf(r.date.getYear()));
         }
         for(String y: years) yearModel.addElement(y);
-        if(selectedYear == null || !years.contains(selectedYear)) selectedYear = "전체";
+        if(selectedYear == null || !years.contains(selectedYear)) selectedYear = "\uC804\uCCB4"; // "전체"
         if(yearList != null && yearModel.getSize() > 0) {
             yearList.setSelectedValue(selectedYear, true);
         }
@@ -292,14 +290,14 @@ public class Main {
     RestaurantPreset readPresetFromRecordFile(String path){
         try(BufferedReader br = Files.newBufferedReader(new File(path).toPath(), Charset.forName("MS949"))){
             String line;
-            String category = "기타";
+            String category = "\uAE30\uD0C0"; // "기타"
             int x = -1;
             int y = -1;
 
             while((line = br.readLine()) != null){
-                if(line.startsWith("카테고리:")) category = line.substring(5).trim();
-                if(line.startsWith("위치X:")) x = Integer.parseInt(line.substring(4).trim());
-                if(line.startsWith("위치Y:")) y = Integer.parseInt(line.substring(4).trim());
+                if(line.startsWith("\uCE74\uD14C\uACE0\uB9AC:")) category = line.substring(5).trim(); // "카테고리:"
+                if(line.startsWith("\uC704\uCE58X:")) x = Integer.parseInt(line.substring(4).trim()); // "위치X:"
+                if(line.startsWith("\uC704\uCE58Y:")) y = Integer.parseInt(line.substring(4).trim()); // "위치Y:"
             }
 
             if(x >= 0 && y >= 0){
@@ -326,7 +324,7 @@ public class Main {
         listModel.clear();
         visibleRecords.clear();
         for(Record r: records){
-            if("전체".equals(selectedYear) || (r.date != null && String.valueOf(r.date.getYear()).equals(selectedYear))){
+            if("\uC804\uCCB4".equals(selectedYear) || (r.date != null && String.valueOf(r.date.getYear()).equals(selectedYear))){ // "전체"
                 visibleRecords.add(r);
                 String label = (r.date!=null? r.date.format(dtf)+"_":"")+r.restaurantName;
                 listModel.addElement(label);
@@ -352,7 +350,7 @@ public class Main {
             }
             recordDetail.setText(sb.toString());
         }catch(Exception e){
-            recordDetail.setText("파일을 읽을 수 없습니다: "+e.getMessage());
+            recordDetail.setText("\uD30C\uC77C\uC744 \uC77D\uC744 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4: "+e.getMessage()); // "파일을 읽을 수 없습니다: "
         }
     }
 
@@ -370,12 +368,12 @@ public class Main {
         }
 
         if(matchedRecords.isEmpty()){
-            JOptionPane.showMessageDialog(frame, "해당 식당의 기록이 없습니다.");
+            JOptionPane.showMessageDialog(frame, "\uD574\uB2F9 \uC2DD\uB2F9\uC758 \uAE30\uB85D\uC774 \uC5C6\uC2B5\uB2C8\uB2E4."); // "해당 식당의 기록이 없습니다."
             return;
         }
 
         // Create dialog to show all records
-        JDialog dialog = new JDialog(frame, restaurantName + " - 기록 보기", true);
+        JDialog dialog = new JDialog(frame, restaurantName + " - \uAE30\uB85D \uBCF4\uAE30", true); // " - 기록 보기"
         dialog.setSize(600, 450);
         dialog.setLayout(new BorderLayout(10, 10));
 
@@ -397,7 +395,7 @@ public class Main {
         for(int i = 0; i < matchedRecords.size(); i++){
             final int idx = i;
             // 날짜로 버튼 텍스트 설정
-            String dateStr = matchedRecords.get(i).date != null ? matchedRecords.get(i).date.format(dtf) : "날짜없음";
+            String dateStr = matchedRecords.get(i).date != null ? matchedRecords.get(i).date.format(dtf) : "\uB0A0\uC9DC\uC5C6\uC74C"; // "날짜없음"
             JButton btn = new JButton(dateStr);
             btn.setPreferredSize(new Dimension(110, 40));
             btn.setFont(new Font("Arial", Font.BOLD, 11));
@@ -435,7 +433,7 @@ public class Main {
             }
             detailArea.setText(sb.toString());
         }catch(Exception ex){
-            detailArea.setText("파일을 읽을 수 없습니다: "+ex.getMessage());
+            detailArea.setText("\uD30C\uC77C\uC744 \uC77D\uC744 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4: "+ex.getMessage()); // "파일을 읽을 수 없습니다: "
         }
 
         // Store detailArea and buttons in a way we can access it from button listeners
@@ -469,14 +467,14 @@ public class Main {
             }
             detailArea.setText(sb.toString());
         }catch(Exception ex){
-            detailArea.setText("파일을 읽을 수 없습니다: "+ex.getMessage());
+            detailArea.setText("\uD30C\uC77C\uC744 \uC77D\uC744 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4: "+ex.getMessage()); // "파일을 읽을 수 없습니다: "
         }
     }
 
     void showLocationOnMap(){
         int idx = recordList.getSelectedIndex();
         if(idx<0 || idx >= visibleRecords.size()) {
-            JOptionPane.showMessageDialog(frame, "기록을 선택하세요");
+            JOptionPane.showMessageDialog(frame, "\uAE30\uB85D\uC744 \uC120\uD0DD\uD558\uC138\uC694"); // "기록을 선택하세요"
             return;
         }
         Record r = visibleRecords.get(idx);
@@ -493,23 +491,23 @@ public class Main {
                 try(BufferedReader br = Files.newBufferedReader(new File(r.path).toPath(), Charset.forName("MS949"))){
                     String line;
                     while((line = br.readLine()) != null){
-                        if(line.startsWith("위치X:")) locX = Integer.parseInt(line.substring(4).trim());
-                        if(line.startsWith("위치Y:")) locY = Integer.parseInt(line.substring(4).trim());
+                        if(line.startsWith("\uC704\uCE58X:")) locX = Integer.parseInt(line.substring(4).trim()); // "위치X:"
+                        if(line.startsWith("\uC704\uCE58Y:")) locY = Integer.parseInt(line.substring(4).trim()); // "위치Y:"
                     }
                 }
             }
 
             if(locX < 0 || locY < 0){
-                JOptionPane.showMessageDialog(frame, "위치 정보가 없습니다");
+                JOptionPane.showMessageDialog(frame, "\uC704\uCE58 \uC815\uBCF4\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4"); // "위치 정보가 없습니다"
                 return;
             }
 
             // Show location on map
-            JDialog mapDialog = new JDialog(frame, r.restaurantName + " - 위치", true);
+            JDialog mapDialog = new JDialog(frame, r.restaurantName + " - \uC704\uCE58", true); // " - 위치"
             mapDialog.setSize(1000, 800);
             JPanel mapPanel = new JPanel(null);
 
-            ImageIcon mapIcon = new ImageIcon("images/지도.jpg");
+            ImageIcon mapIcon = new ImageIcon("images/\uC9C0\uB3C4.jpg"); // "images/지도.jpg"
             JLabel mapLabel = new JLabel(mapIcon);
             mapLabel.setBounds(0,0,1000,800);
             mapPanel.add(mapLabel);
@@ -528,7 +526,7 @@ public class Main {
             mapDialog.setVisible(true);
 
         }catch(Exception ex){
-            JOptionPane.showMessageDialog(frame, "위치 정보를 읽을 수 없습니다: "+ex.getMessage());
+            JOptionPane.showMessageDialog(frame, "\uC704\uCE58 \uC815\uBCF4\uB97C \uC77D\uC744 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4: "+ex.getMessage()); // "위치 정보를 읽을 수 없습니다: "
         }
     }
 
@@ -542,7 +540,7 @@ public class Main {
                 return;
             }
         }
-        JOptionPane.showMessageDialog(frame, "해당 식당의 기록이 없습니다.");
+        JOptionPane.showMessageDialog(frame, "\uD574\uB2F9 \uC2DD\uB2F9\uC758 \uAE30\uB85D\uC774 \uC5C6\uC2B5\uB2C8\uB2E4."); // "해당 식당의 기록이 없습니다."
     }
 
     class AddRecordDialog extends JDialog{
@@ -556,7 +554,7 @@ public class Main {
         MouseListener activeLocationListener;
 
         public AddRecordDialog(JFrame owner, JLabel mapLabelRef, JTabbedPane tabbedPaneRef){
-            super(owner, "기록 추가", false);
+            super(owner, "\uAE30\uB85D \uCD94\uAC00", false); // "기록 추가"
             setSize(400,550);
             setLayout(null);
             this.mapLabel = mapLabelRef;
@@ -569,7 +567,7 @@ public class Main {
                 restNames.add(r.restaurantName);
             }
 
-            JLabel restLabel = new JLabel("식당명:");
+            JLabel restLabel = new JLabel("\uC2DD\uB2F9\uBA85:"); // "식당명:"
             restLabel.setBounds(20, 20, 80, 20);
             add(restLabel);
             restCombo = new JComboBox<>(restNames.toArray(new String[0]));
@@ -578,50 +576,50 @@ public class Main {
             add(restCombo);
             restCombo.addActionListener(e -> applyRestaurantDefaults());
 
-            JLabel categoryLabel = new JLabel("카테고리:");
+            JLabel categoryLabel = new JLabel("\uCE74\uD14C\uACE0\uB9AC:"); // "카테고리:"
             categoryLabel.setBounds(20, 55, 80, 20);
             add(categoryLabel);
-            String[] kinds = {"한식","분식","중식","일식","양식","카페","패스트푸드","기타"};
+            String[] kinds = {"\uD55C\uC2DD","\uBD84\uC2DD","\uC911\uC2DD","\uC77C\uC2DD","\uC591\uC2DD","\uCE74\uD398","\uD328\uC2A4\uD2B8\uD478\uB4DC","\uAE30\uD0C0"};
             categoryCombo = new JComboBox<>(kinds);
             categoryCombo.setSelectedIndex(7); // Default to "기타"
             categoryCombo.setBounds(100, 55, 260, 25);
             add(categoryCombo);
 
             menuField = new JTextField();
-            JLabel menuLabel = new JLabel("메뉴:");
+            JLabel menuLabel = new JLabel("\uBA54\uB274:"); // "메뉴:"
             menuLabel.setBounds(20, 90, 80, 20);
             add(menuLabel);
             menuField.setBounds(100, 90, 260, 25);
             add(menuField);
 
             priceField = new JTextField();
-            JLabel priceLabel = new JLabel("가격:");
+            JLabel priceLabel = new JLabel("\uAC00\uACA9:"); // "가격:"
             priceLabel.setBounds(20, 125, 80, 20);
             add(priceLabel);
             priceField.setBounds(100, 125, 260, 25);
             add(priceField);
 
             dateField = new JTextField(LocalDate.now().format(dtf));
-            JLabel dateLabel = new JLabel("날짜:");
+            JLabel dateLabel = new JLabel("\uB0A0\uC9DC:"); // "날짜:"
             dateLabel.setBounds(20, 160, 80, 20);
             add(dateLabel);
             dateField.setBounds(100, 160, 260, 25);
             add(dateField);
 
-            locationField = new JTextField("클릭하여 위치 선택");
+            locationField = new JTextField("\uD074\uB9AD\uD558\uC5EC \uC704\uCE58 \uC120\uD0DD"); // "클릭하여 위치 선택"
             locationField.setEditable(false);
-            JLabel locLabel = new JLabel("위치:");
+            JLabel locLabel = new JLabel("\uC704\uCE58:"); // "위치:"
             locLabel.setBounds(20, 195, 80, 20);
             add(locLabel);
             locationField.setBounds(100, 195, 260, 25);
             add(locationField);
 
-            JButton selectLocBtn = new JButton("지도에서 클릭");
+            JButton selectLocBtn = new JButton("\uC9C0\uB3C4\uC5D0\uC11C \uD074\uB9AD"); // "지도에서 클릭"
             selectLocBtn.setBounds(20, 230, 340, 30);
             add(selectLocBtn);
             selectLocBtn.addActionListener(e -> selectLocationOnMap());
 
-            JLabel noteLabel = new JLabel("메모:");
+            JLabel noteLabel = new JLabel("\uBA54\uBAA8:"); // "메모:"
             noteLabel.setBounds(20, 270, 80, 20);
             add(noteLabel);
             noteArea = new JTextArea();
@@ -631,7 +629,7 @@ public class Main {
             sp.setBounds(20, 290, 340, 100);
             add(sp);
 
-            JButton save = new JButton("저장");
+            JButton save = new JButton("\uC800\uC7A5"); // "저장"
             save.setBounds(140, 410, 100, 30);
             add(save);
             save.addActionListener(e -> saveRecord());
@@ -658,21 +656,21 @@ public class Main {
             }
             selectedX = preset.x;
             selectedY = preset.y;
-            locationField.setText("위치: (" + selectedX + ", " + selectedY + ")");
+            locationField.setText("\uC704\uCE58: (" + selectedX + ", " + selectedY + ")"); // "위치: ("
         }
 
         void selectLocationOnMap(){
-            JDialog picker = new JDialog((Frame)SwingUtilities.getWindowAncestor(this), "위치 선택", true);
+            JDialog picker = new JDialog((Frame)SwingUtilities.getWindowAncestor(this), "\uC704\uCE58 \uC120\uD0DD", true); // "위치 선택"
             picker.setSize(1000, 800);
             picker.setResizable(false);
             picker.setLayout(null);
 
-            ImageIcon mapIcon = new ImageIcon("images/지도.jpg");
+            ImageIcon mapIcon = new ImageIcon("images/\uC9C0\uB3C4.jpg"); // "images/지도.jpg"
             JLabel pickerMap = new JLabel(mapIcon);
             pickerMap.setBounds(0, 0, 1000, 800);
             picker.add(pickerMap);
 
-            JLabel hint = new JLabel("지도를 클릭해서 위치를 선택하세요");
+            JLabel hint = new JLabel("\uC9C0\uB3C4\uB97C \uD074\uB9AD\uD574\uC11C \uC704\uCE58\uB97C \uC120\uD0DD\uD558\uC138\uC694"); // "지도를 클릭해서 위치를 선택하세요"
             hint.setOpaque(true);
             hint.setBackground(new Color(255, 255, 255, 220));
             hint.setBounds(20, 20, 220, 30);
@@ -683,7 +681,7 @@ public class Main {
                 public void mouseClicked(MouseEvent e) {
                     selectedX = e.getX();
                     selectedY = e.getY();
-                    locationField.setText("위치: (" + selectedX + ", " + selectedY + ")");
+                    locationField.setText("\uC704\uCE58: (" + selectedX + ", " + selectedY + ")");
                     picker.dispose();
                     AddRecordDialog.this.toFront();
                     AddRecordDialog.this.requestFocus();
@@ -699,11 +697,11 @@ public class Main {
             String restName = (restObj != null) ? restObj.toString().trim() : "";
 
             if(restName.isEmpty()){
-                JOptionPane.showMessageDialog(this,"식당명을 입력하세요");
+                JOptionPane.showMessageDialog(this,"\uC2DD\uB2F9\uBA85\uC744 \uC785\uB825\uD558\uC138\uC694"); // "식당명을 입력하세요"
                 return;
             }
             if(selectedX < 0 || selectedY < 0){
-                JOptionPane.showMessageDialog(this,"지도에서 위치를 선택하세요");
+                JOptionPane.showMessageDialog(this,"\uC9C0\uB3C4\uC5D0\uC11C \uC704\uCE58\uB97C \uC120\uD0DD\uD558\uC138\uC694"); // "지도에서 위치를 선택하세요"
                 return;
             }
 
@@ -713,21 +711,21 @@ public class Main {
             String note = noteArea.getText().trim();
             String category = (String)categoryCombo.getSelectedItem();
 
-            // Save location info to file
-            String safeRest = restName.replaceAll("[^a-zA-Z0-9가-힣_\\- ]","_").replaceAll(" ","-");
+            // Save location info to file (가-힣 -> \uAC00-\uD7A3 정규식 처리 완벽 보장)
+            String safeRest = restName.replaceAll("[^a-zA-Z0-9\uAC00-\uD7A3_\\- ]","_").replaceAll(" ","-");
             String filename = date+"_"+safeRest+".txt";
             File f = new File("Records/"+filename);
 
             try(BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), Charset.forName("MS949")))){
-                bw.write("식당명: "+restName+"\n");
-                bw.write("카테고리: "+category+"\n");
-                bw.write("메뉴: "+menu+"\n");
-                bw.write("가격: "+price+"\n");
-                bw.write("날짜: "+date+"\n");
-                bw.write("메모: \n"+note+"\n");
+                bw.write("\uC2DD\uB2F9\uBA85: "+restName+"\n"); // "식당명: "
+                bw.write("\uCE74\uD14C\uACE0\uB9AC: "+category+"\n"); // "카테고리: "
+                bw.write("\uBA54\uB274: "+menu+"\n"); // "메뉴: "
+                bw.write("\uAC00\uACA9: "+price+"\n"); // "가격: "
+                bw.write("\uB0A0\uC9DC: "+date+"\n"); // "날짜: "
+                bw.write("\uBA54\uBAA8: \n"+note+"\n"); // "메모: "
                 bw.flush();
             }catch(Exception ex){
-                JOptionPane.showMessageDialog(this,"저장 실패: "+ex.getMessage());
+                JOptionPane.showMessageDialog(this,"\uC800\uC7A5 \uC2E4\uD328: "+ex.getMessage()); // "저장 실패: "
                 return;
             }
 
@@ -779,14 +777,14 @@ public class Main {
             try(BufferedReader br = Files.newBufferedReader(f.toPath(), Charset.forName("MS949"))){
                 String line;
                 String tmpRestaurantName = "";
-                String tmpKinds = "기타";
+                String tmpKinds = "\uAE30\uD0C0"; // "기타"
                 int tmpX = -1, tmpY = -1;
 
                 while((line = br.readLine()) != null){
-                    if(line.startsWith("식당명:")) tmpRestaurantName = line.substring(4).trim();
-                    if(line.startsWith("카테고리:")) tmpKinds = line.substring(5).trim();
-                    if(line.startsWith("위치X:")) tmpX = Integer.parseInt(line.substring(4).trim());
-                    if(line.startsWith("위치Y:")) tmpY = Integer.parseInt(line.substring(4).trim());
+                    if(line.startsWith("\uC2DD\uB2F9\uBA85:")) tmpRestaurantName = line.substring(4).trim();
+                    if(line.startsWith("\uCE74\uD14C\uACE0\uB9AC:")) tmpKinds = line.substring(5).trim();
+                    if(line.startsWith("\uC704\uCE58X:")) tmpX = Integer.parseInt(line.substring(4).trim());
+                    if(line.startsWith("\uC704\uCE58Y:")) tmpY = Integer.parseInt(line.substring(4).trim());
                 }
 
                 final String restaurantName = tmpRestaurantName;
