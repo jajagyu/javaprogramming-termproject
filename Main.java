@@ -90,7 +90,7 @@ public class Main {
         topControls.add(btnAdd, BorderLayout.NORTH);
 
         // Filters Label (부드러운 텍스트와 폰트로 교체)
-        JLabel filterLabel = new JLabel("\u2728 \uC6D0\uD558\uB294 \uCE74\uD14C\uACE0\uB9AC \uC120\uD0DD \u2728", SwingConstants.CENTER); // "✨ 원하는 카테고리 선택 ✨"
+        JLabel filterLabel = new JLabel(" \uC6D0\uD558\uB294 \uCE74\uD14C\uACE0\uB9AC \uC120\uD0DD ", SwingConstants.CENTER); // "원하는 카테고리 선택"
         filterLabel.setFont(new Font("\uB9D1\uC740 \uACE0\uB515", Font.BOLD, 14)); // "맑은 고딕"
         filterLabel.setForeground(new Color(100, 100, 100)); // 부드러운 회색
         topControls.add(filterLabel, BorderLayout.SOUTH);
